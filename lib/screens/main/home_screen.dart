@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mituranga_project/screens/main/admin_screen.dart';
+import 'package:mituranga_project/screens/main/message.dart';
 import 'package:mituranga_project/screens/main/visible_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   FirebaseFirestore? db;
   List tempList = [];
+  bool userType = false;
 
   @override
   void initState() {
@@ -38,10 +40,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const AdminScreen(),
+                      builder: (context) => const VisibleScreen(),
                     ));
               },
-              icon: const Icon(Icons.admin_panel_settings_outlined)),
+              icon: const Icon(Icons.more_vert_outlined)),
+          userType
+              ? IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AdminScreen(),
+                        ));
+                  },
+                  icon: const Icon(Icons.admin_panel_settings_outlined))
+              : const SizedBox(),
         ],
       ),
       body: FutureBuilder(
@@ -96,50 +109,68 @@ class _HomeScreenState extends State<HomeScreen> {
                 : ListView.builder(
                     itemCount: tempList.length,
                     itemBuilder: (context, index) {
-                      // return Padding(
-                      //   padding: const EdgeInsets.all(8.0),
-                      //   child: ListTile(
-                      //     contentPadding: const EdgeInsets.all(8),
-                      //     shape: BeveledRectangleBorder(
-                      //         borderRadius: BorderRadius.circular(5),
-                      //         side: BorderSide(color: Colors.black38)),
-                      //     leading: CircleAvatar(
-                      //       child: Text(tempList[index]["dayOneTitle"][0]),
-                      //     ),
-                      //     title: Text("${tempList[index]["dayOneTitle"]}"),
-                      //     trailing: IconButton(
-                      //         onPressed: () {
-                      //           viewDetails(index);
-                      //         },
-                      //         icon: Icon(Icons.view_compact_sharp)),
-                      //     subtitleTextStyle: TextStyle(
-                      //       fontSize: 16,
-                      //       color: Colors.black,
-                      //       fontWeight: FontWeight.bold,
-                      //     ),
-                      //     titleTextStyle: TextStyle(
-                      //       fontSize: 20,
-                      //       color: Colors.black,
-                      //       fontWeight: FontWeight.bold,
-                      //     ),
-                      //   ),
-                      // );
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(8),
+                          shape: BeveledRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              side: BorderSide(color: Colors.black38)),
+                          leading: CircleAvatar(
+                            child: Text(tempList[index]["selectLevel"][0]
+                                .toString()
+                                .toUpperCase()),
+                          ),
+                          title: Text("${tempList[index]["selectLevel"]}"),
+                          trailing: IconButton(
+                              onPressed: () {
+                                viewDetails(index);
+                              },
+                              icon: Icon(Icons.view_compact_sharp)),
+                          subtitleTextStyle: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          titleTextStyle: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
                     },
                   );
           }
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MessageScreen(),
+              ));
+        },
+        child: Icon(Icons.message),
+      ),
     );
   }
 
   Future loadData() async {
+    tempList.clear();
     var userEmail = FirebaseAuth.instance.currentUser!.email;
     await db!.collection("Choices").get().then((event) {
       for (var doc in event.docs) {
-        print(doc.data()["email"]);
-        if (doc.data()["email"] == userEmail) {
+        if (doc.data()["userEmail"] == userEmail) {
           tempList.add(doc.data());
-          print("email ${doc.data()["email"]}");
+        }
+      }
+    });
+    await db!.collection("users").get().then((event) {
+      for (var doc in event.docs) {
+        if (doc.data()["email"] == userEmail) {
+          userType = doc.data()["type"];
         }
       }
     });
@@ -316,7 +347,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text("Cancel"))
+                child: Text("Cancel")),
+            TextButton(
+                onPressed: () async {
+                  await db!.collection("Schedule");
+                },
+                child: Text("Delete"))
           ],
         );
       },

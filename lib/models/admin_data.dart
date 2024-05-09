@@ -1,5 +1,6 @@
 class AdminData {
-  String? userEmail;
+  String? token;
+  String? email;
   String? selectLevel;
 
   String? dayOneTitle;
@@ -33,7 +34,8 @@ class AdminData {
   bool? activeStatus;
 
   AdminData({
-    this.userEmail,
+    this.token,
+    this.email,
     this.selectLevel,
     this.dayOneTitle,
     this.dayOneWarmUp,
@@ -62,7 +64,8 @@ class AdminData {
 
   Map<String, dynamic> toJson() {
     return {
-      "userEmail": userEmail,
+      "token": token,
+      "userEmail": email,
       "selectLevel": selectLevel,
       "dayOneTitle": dayOneTitle,
       "dayOneWarmUp": dayOneWarmUp,
@@ -92,7 +95,8 @@ class AdminData {
 
   factory AdminData.fromJson(Map<String, dynamic> fromJson) {
     return AdminData(
-        userEmail: fromJson["userEmail"],
+        token: fromJson["token"],
+        email: fromJson["userEmail"],
         selectLevel: fromJson["selectLevel"],
         dayOneTitle: fromJson["dayOneTitle"],
         dayOneWarmUp: fromJson["dayOneWarmUp"],

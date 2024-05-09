@@ -135,6 +135,7 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
       birthDay: widget.birthDay,
       weight: weight.text.trim(),
       height: height.text.trim(),
+      type: false,
     );
     await db!.collection("users").add(userData.toJson()).then(
         (DocumentReference doc) =>

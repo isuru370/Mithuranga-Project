@@ -464,7 +464,7 @@ class _AdminScreenState extends State<AdminScreen> {
     var userEmail = FirebaseAuth.instance.currentUser!.email;
     print(userEmail);
     AdminData admin = AdminData(
-      userEmail: userEmail,
+      email: userEmail,
       selectLevel: stringValue!.trim(),
       dayOneTitle: dayOneTitle.text.trim(),
       dayOneWarmUp: dayOneWarmUp.text.trim(),

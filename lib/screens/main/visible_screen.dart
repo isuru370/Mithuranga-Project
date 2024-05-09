@@ -332,15 +332,40 @@ class _VisibleScreenState extends State<VisibleScreen> {
   }
 
   void update(bool value, String docI, int index) async {
+    var userE = FirebaseAuth.instance.currentUser!.email;
     await db!.collection("Schedule").doc("$docI").update({
       "activeStatus": value,
     }).then((values) async {
       if (value) {
-        AddSchedule aS = AddSchedule(
-            email: FirebaseAuth.instance.currentUser!.email,
-            documentId: docI,
-            level: tempList[index]["selectLevel"]);
-        await db!.collection("Choices").add(aS.toJson()).then(
+        AdminData admin = AdminData(
+          token: "",
+          email: FirebaseAuth.instance.currentUser!.email,
+          selectLevel: tempList[index]["selectLevel"],
+          dayOneTitle: tempList[index]["dayOneTitle"],
+          dayOneWarmUp: tempList[index]["dayOneWarmUp"],
+          dayOneDrills: tempList[index]["dayOneDrills"],
+          dayOneMainSet: tempList[index]["dayOneMainSet"],
+          dayOneCoolDown: tempList[index]["dayOneCoolDown"],
+          dayTwoTitle: tempList[index]["dayTwoTitle"],
+          dayTwoWarmUp: tempList[index]["dayTwoWarmUp"],
+          dayTwoDrills: tempList[index]["dayTwoDrills"],
+          dayTwoCoolDown: tempList[index]["dayTwoCoolDown"],
+          dayThreeTitle: tempList[index]["dayThreeTitle"],
+          dayThreeDryland: tempList[index]["dayThreeDryland"],
+          dayThreePool: tempList[index]["dayThreePool"],
+          dayThreeCoolDown: tempList[index]["dayThreeCoolDown"],
+          dayForeTitle: tempList[index]["dayForeTitle"],
+          dayFiveTitle: tempList[index]["dayFiveTitle"],
+          dayFiveWarmUp: tempList[index]["dayFiveWarmUp"],
+          dayFiveCoolDown: tempList[index]["dayFiveCoolDown"],
+          daySixTitle: tempList[index]["daySixTitle"],
+          daySixWarmUp: tempList[index]["daySixWarmUp"],
+          daySixMainSet: tempList[index]["daySixMainSet"],
+          daySixCoolDown: tempList[index]["daySixCoolDown"],
+          daySevenTitle: tempList[index]["daySevenTitle"],
+          activeStatus: true,
+        );
+        await db!.collection("Choices").add(admin.toJson()).then(
               (value) {},
             );
       } else {}

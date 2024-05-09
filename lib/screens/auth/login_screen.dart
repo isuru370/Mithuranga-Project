@@ -23,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
       resizeToAvoidBottomInset: false,
       body: Center(
         child: Container(
+          height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topRight,
@@ -33,102 +34,108 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.lock_open,
-                size: 100,
-                color: Colors.white,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Wrap(
-                children: [
-                  Text(
-                    "Swimming Coach",
-                    style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 60,
-              ),
-              TextComponent(
-                controller: email,
-                obscureText: false,
-                hintText: "email",
-                keyboardType: TextInputType.emailAddress,
-              ),
-              TextComponent(
-                controller: password,
-                obscureText: visibility,
-                maxLines: 1,
-                hintText: "password",
-                keyboardType: TextInputType.visiblePassword,
-                suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        if (visibility) {
-                          visibility = false;
-                        } else {
-                          visibility = true;
-                        }
-                      });
-                    },
-                    icon: visibility
-                        ? Icon(Icons.visibility_off)
-                        : Icon(Icons.visibility)),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      "forgot password",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              ButtonComponent(
-                  onTap: () {
-                    loginMethod();
-                  },
-                  buttonText: "Login"),
-              TextButton(
-                onPressed: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  height: 50,
+                ),
+                const Icon(
+                  Icons.lock_open,
+                  size: 100,
+                  color: Colors.white,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Wrap(
                   children: [
-                    const Text(
-                      "No account yet ?",
-                      style: TextStyle(color: Colors.black),
+                    Text(
+                      "Swimming Coach",
+                      style: TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                      textAlign: TextAlign.center,
                     ),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const RegisterScreen(),
-                              ));
-                        },
-                        child: const Text("Register",
-                            style:
-                                TextStyle(color: Colors.white54, fontSize: 16)))
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(
+                  height: 60,
+                ),
+                TextComponent(
+                  controller: email,
+                  obscureText: false,
+                  hintText: "email",
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                TextComponent(
+                  controller: password,
+                  obscureText: visibility,
+                  maxLines: 1,
+                  hintText: "password",
+                  keyboardType: TextInputType.visiblePassword,
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          if (visibility) {
+                            visibility = false;
+                          } else {
+                            visibility = true;
+                          }
+                        });
+                      },
+                      icon: visibility
+                          ? Icon(Icons.visibility_off)
+                          : Icon(Icons.visibility)),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        "forgot password",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                ButtonComponent(
+                    onTap: () {
+                      loginMethod();
+                    },
+                    buttonText: "Login"),
+                TextButton(
+                  onPressed: () {},
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "No account yet ?",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const RegisterScreen(),
+                                ));
+                          },
+                          child: const Text("Register",
+                              style: TextStyle(
+                                  color: Colors.white54, fontSize: 16)))
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

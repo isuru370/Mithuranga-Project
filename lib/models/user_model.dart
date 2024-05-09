@@ -7,6 +7,7 @@ class UserModel {
   String? password;
   String? height;
   String? weight;
+  bool? type;
 
   UserModel({
     this.fullName,
@@ -17,6 +18,7 @@ class UserModel {
     this.password,
     this.height,
     this.weight,
+    this.type,
   });
 
   Map<String, dynamic> toJson() {
@@ -29,6 +31,7 @@ class UserModel {
       "password": password,
       "height": height,
       "weight": weight,
+      "type": type,
     };
   }
 
@@ -42,6 +45,7 @@ class UserModel {
       password: json["password"],
       height: json["height"],
       weight: json["weight"],
+      type: json["type"],
     );
   }
 }
