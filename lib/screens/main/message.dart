@@ -13,6 +13,7 @@ class MessageScreen extends StatefulWidget {
 class _MessageScreenState extends State<MessageScreen> {
   FirebaseFirestore? db;
   List userList = [];
+  List docId = [];
 
   @override
   void initState() {
@@ -60,6 +61,8 @@ class _MessageScreenState extends State<MessageScreen> {
                   : ListView.builder(
                       itemCount: userList.length,
                       itemBuilder: (context, index) {
+                        var id = docId[index];
+                        print(id);
                         return Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: ListTile(
@@ -69,7 +72,7 @@ class _MessageScreenState extends State<MessageScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => ChatScreen(
                                       name: userList[index]["fullName"],
-                                      chatRoomId: userList[index],
+                                      chatRoomId: id,
                                     ),
                                   ));
                             },
@@ -106,6 +109,8 @@ class _MessageScreenState extends State<MessageScreen> {
           if (doc.data()["email"] == userEmail) {
           } else {
             userList.add(doc.data());
+            docId.add(doc.id);
+            print(doc.id);
           }
         }
       },
