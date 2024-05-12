@@ -85,7 +85,7 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                         controller: height,
                         keyboardType: TextInputType.number),
                   ),
-                  Text(hw),
+                  Text("cm"),
                 ],
               ),
             ),
@@ -157,8 +157,40 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Weak Password"),
+              content: Text("The password provided is too weak."),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Ok")),
+              ],
+            );
+          },
+        );
         print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Email Already In Use"),
+              content: Text("The account already exists for that email."),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Ok")),
+              ],
+            );
+          },
+        );
         print('The account already exists for that email.');
       }
     } catch (e) {

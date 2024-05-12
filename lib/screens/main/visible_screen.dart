@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mituranga_project/models/add.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mituranga_project/models/admin_data.dart';
+import 'package:mituranga_project/screens/main/home_screen.dart';
 
 class VisibleScreen extends StatefulWidget {
   const VisibleScreen({super.key});
@@ -14,16 +15,20 @@ class VisibleScreen extends StatefulWidget {
 class _VisibleScreenState extends State<VisibleScreen> {
   final item5 = ["Beginner Level", "Intermediate Level", "Professional  Level"];
   List<Map<String, dynamic>> tempList = [];
+  List tempList2 = [];
   List docId = [];
   String? selectLevel;
   FirebaseFirestore? db;
-  bool schedule = false;
+  bool? schedule;
+
+  int? _select;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     db = FirebaseFirestore.instance;
+    choiceId();
   }
 
   @override
@@ -31,6 +36,7 @@ class _VisibleScreenState extends State<VisibleScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("You are Choices Plan"),
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
@@ -83,6 +89,8 @@ class _VisibleScreenState extends State<VisibleScreen> {
                           itemCount: tempList.length,
                           itemBuilder: (context, index) {
                             var id = docId[index];
+                            choiceId();
+                            chackShedule(id);
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: ListTile(
@@ -91,12 +99,18 @@ class _VisibleScreenState extends State<VisibleScreen> {
                                     borderRadius: BorderRadius.circular(5),
                                     side: BorderSide(color: Colors.black38)),
                                 leading: Checkbox(
-                                  value: tempList[index]["activeStatus"],
+                                  value: schedule,
                                   onChanged: (value) {
                                     setState(() {
-                                      tempList[index]["activeStatus"] = value!;
-                                      update(value, id, index);
-                                      tempList.clear();
+                                      if (schedule!) {
+                                        Fluttertoast.showToast(
+                                            msg: "It already exists",
+                                            toastLength: Toast.LENGTH_LONG);
+                                      } else {
+                                        tempList[index]["activeStatus"] =
+                                            value!;
+                                        update(value, id, index);
+                                      }
                                     });
                                   },
                                 ),
@@ -133,6 +147,16 @@ class _VisibleScreenState extends State<VisibleScreen> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(),
+              ));
+        },
+        child: Icon(Icons.arrow_back),
+      ),
     );
   }
 
@@ -142,6 +166,7 @@ class _VisibleScreenState extends State<VisibleScreen> {
       );
 
   Future loadData() async {
+    tempList.clear();
     await db!.collection("Schedule").get().then((event) {
       for (var doc in event.docs) {
         if (doc.data()["selectLevel"] == selectLevel) {
@@ -150,7 +175,24 @@ class _VisibleScreenState extends State<VisibleScreen> {
           docId.add(doc.id);
         }
       }
-    });
+    }).onError(
+      (error, stackTrace) {
+        print(error);
+      },
+    );
+  }
+
+  void choiceId() async {
+    tempList2.clear();
+    await db!.collection("Choices").get().then(
+      (value) {
+        for (var doc in value.docs) {
+          AdminData.fromJson(doc.data());
+          tempList2.add(doc.data()["documentId"]);
+          print(doc.data()["documentId"]);
+        }
+      },
+    );
   }
 
   void viewDetails(int index) {
@@ -333,42 +375,50 @@ class _VisibleScreenState extends State<VisibleScreen> {
 
   void update(bool value, String docI, int index) async {
     var userE = FirebaseAuth.instance.currentUser!.email;
-    await db!.collection("Schedule").doc("$docI").update({
-      "activeStatus": value,
-    }).then((values) async {
-      if (value) {
-        AdminData admin = AdminData(
-          token: "",
-          email: FirebaseAuth.instance.currentUser!.email,
-          selectLevel: tempList[index]["selectLevel"],
-          dayOneTitle: tempList[index]["dayOneTitle"],
-          dayOneWarmUp: tempList[index]["dayOneWarmUp"],
-          dayOneDrills: tempList[index]["dayOneDrills"],
-          dayOneMainSet: tempList[index]["dayOneMainSet"],
-          dayOneCoolDown: tempList[index]["dayOneCoolDown"],
-          dayTwoTitle: tempList[index]["dayTwoTitle"],
-          dayTwoWarmUp: tempList[index]["dayTwoWarmUp"],
-          dayTwoDrills: tempList[index]["dayTwoDrills"],
-          dayTwoCoolDown: tempList[index]["dayTwoCoolDown"],
-          dayThreeTitle: tempList[index]["dayThreeTitle"],
-          dayThreeDryland: tempList[index]["dayThreeDryland"],
-          dayThreePool: tempList[index]["dayThreePool"],
-          dayThreeCoolDown: tempList[index]["dayThreeCoolDown"],
-          dayForeTitle: tempList[index]["dayForeTitle"],
-          dayFiveTitle: tempList[index]["dayFiveTitle"],
-          dayFiveWarmUp: tempList[index]["dayFiveWarmUp"],
-          dayFiveCoolDown: tempList[index]["dayFiveCoolDown"],
-          daySixTitle: tempList[index]["daySixTitle"],
-          daySixWarmUp: tempList[index]["daySixWarmUp"],
-          daySixMainSet: tempList[index]["daySixMainSet"],
-          daySixCoolDown: tempList[index]["daySixCoolDown"],
-          daySevenTitle: tempList[index]["daySevenTitle"],
-          activeStatus: true,
-        );
-        await db!.collection("Choices").add(admin.toJson()).then(
-              (value) {},
-            );
-      } else {}
-    });
+    var isEx = tempList2.contains(docI);
+    if (isEx) {
+    } else {
+      AdminData admin = AdminData(
+        token: "",
+        email: FirebaseAuth.instance.currentUser!.email,
+        selectLevel: tempList[index]["selectLevel"],
+        dayOneTitle: tempList[index]["dayOneTitle"],
+        dayOneWarmUp: tempList[index]["dayOneWarmUp"],
+        dayOneDrills: tempList[index]["dayOneDrills"],
+        dayOneMainSet: tempList[index]["dayOneMainSet"],
+        dayOneCoolDown: tempList[index]["dayOneCoolDown"],
+        dayTwoTitle: tempList[index]["dayTwoTitle"],
+        dayTwoWarmUp: tempList[index]["dayTwoWarmUp"],
+        dayTwoDrills: tempList[index]["dayTwoDrills"],
+        dayTwoCoolDown: tempList[index]["dayTwoCoolDown"],
+        dayThreeTitle: tempList[index]["dayThreeTitle"],
+        dayThreeDryland: tempList[index]["dayThreeDryland"],
+        dayThreePool: tempList[index]["dayThreePool"],
+        dayThreeCoolDown: tempList[index]["dayThreeCoolDown"],
+        dayForeTitle: tempList[index]["dayForeTitle"],
+        dayFiveTitle: tempList[index]["dayFiveTitle"],
+        dayFiveWarmUp: tempList[index]["dayFiveWarmUp"],
+        dayFiveCoolDown: tempList[index]["dayFiveCoolDown"],
+        daySixTitle: tempList[index]["daySixTitle"],
+        daySixWarmUp: tempList[index]["daySixWarmUp"],
+        daySixMainSet: tempList[index]["daySixMainSet"],
+        daySixCoolDown: tempList[index]["daySixCoolDown"],
+        daySevenTitle: tempList[index]["daySevenTitle"],
+        activeStatus: true,
+        documentId: docI,
+      );
+      await db!.collection("Choices").add(admin.toJson()).then(
+            (value) {},
+          );
+    }
+  }
+
+  void chackShedule(id) {
+    var isEx = tempList2.contains(id);
+    if (isEx) {
+      schedule = true;
+    } else {
+      schedule = false;
+    }
   }
 }

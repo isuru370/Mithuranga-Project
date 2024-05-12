@@ -153,6 +153,8 @@ class _LoginScreenState extends State<LoginScreen> {
             .then(
           (value) {
             prefS.setString("email", value.user!.email!);
+            email.clear();
+            password.clear();
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -162,12 +164,60 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("User Not Found"),
+                content: Text("No user found for that email."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Ok")),
+                ],
+              );
+            },
+          );
           print('No user found for that email.');
         } else if (e.code == 'wrong-password') {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Wrong Password"),
+                content: Text("Wrong password provided for that user."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Ok")),
+                ],
+              );
+            },
+          );
           print('Wrong password provided for that user.');
         }
       }
     } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Password Field"),
+            content: Text("Password Field Empty"),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Ok")),
+            ],
+          );
+        },
+      );
       print('Wrong password provided for that user.');
     }
   }
