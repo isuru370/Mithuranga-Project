@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mituranga_project/components/text_component.dart';
 import 'package:mituranga_project/models/admin_data.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../components/button_component.dart';
 

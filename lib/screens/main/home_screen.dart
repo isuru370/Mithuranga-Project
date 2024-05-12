@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mituranga_project/screens/auth/login_screen.dart';
 import 'package:mituranga_project/screens/main/admin_screen.dart';
 import 'package:mituranga_project/screens/main/histrory.dart';
-import 'package:mituranga_project/screens/main/message.dart';
 import 'package:mituranga_project/screens/main/visible_screen.dart';
 
 import 'chat.dart';
@@ -19,9 +19,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   FirebaseFirestore? db;
   List tempList = [];
-  List tempList1 = [];
   bool userType = false;
   bool loading = false;
+  String? documentId;
+  String? mainId;
 
   @override
   void initState() {
@@ -180,24 +181,33 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future loadData() async {
-    tempList.clear();
+    documentId = null;
+    mainId = null;
     var userEmail = FirebaseAuth.instance.currentUser!.email;
-    await db!.collection("Choices").get().then((event) {
-      for (var doc in event.docs) {
-        if (tempList.isEmpty) {
-          if (doc.data()["userEmail"] == userEmail) {
-            if (doc.data()["activeStatus"] == true) {
-              tempList.add(doc.data());
+    await db!.collection("Choices").get().then(
+      (event) {
+        for (var doc in event.docs) {
+          if (doc.data()["email"] == userEmail) {
+            if (doc.data()["status"] == true) {
+              documentId = doc.data()["documentId"];
+              mainId = doc.id;
+              //print(documentId);
             }
-            tempList1.add(doc.data());
           }
         }
-      }
-    }).onError(
+      },
+    ).catchError(
       (error, stackTrace) {
         print(error);
       },
     );
+    if (documentId != null) {
+      tempList.clear();
+      await db!.collection("Schedule").doc(documentId).get().then((value) {
+        tempList.add(value.data());
+        print(value.data());
+      });
+    }
   }
 
   void userLogin() async {
@@ -391,9 +401,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text("Cancel")),
             TextButton(
                 onPressed: () async {
-                  await db!.collection("Schedule");
+                  await db!
+                      .collection("Choices")
+                      .doc(mainId)
+                      .update({"status": false})
+                      .then((value) => Fluttertoast.showToast(
+                          msg: "Update Success",
+                          toastLength: Toast.LENGTH_LONG))
+                      .catchError((error) => Fluttertoast.showToast(
+                          msg: "$error", toastLength: Toast.LENGTH_LONG));
                 },
-                child: Text("Delete"))
+                child: Text("Deactivate"))
           ],
         );
       },
