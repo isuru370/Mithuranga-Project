@@ -19,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   FirebaseFirestore? db;
   List tempList = [];
-  bool userType = false;
+  bool? userType;
   bool loading = false;
   String? documentId;
   String? mainId;

@@ -43,6 +43,7 @@ class _VisibleScreenState extends State<VisibleScreen> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
+                alignment: Alignment.bottomCenter,
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 decoration: BoxDecoration(
                     border: Border.all(width: 1, color: Colors.black),

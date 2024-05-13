@@ -39,9 +39,10 @@ class _ChatScreenState extends State<ChatScreen> {
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Column(
+          mainAxisSize: MainAxisSize.max,
           children: [
             Container(
-              height: MediaQuery.of(context).size.height / 2,
+              height: MediaQuery.of(context).size.height / 1.28,
               width: MediaQuery.of(context).size.width,
               child: StreamBuilder<QuerySnapshot>(
                 stream: db
@@ -63,33 +64,37 @@ class _ChatScreenState extends State<ChatScreen> {
                 },
               ),
             ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Container(
-        height: MediaQuery.of(context).size.height / 10,
-        width: MediaQuery.of(context).size.width,
-        alignment: Alignment.center,
-        child: Container(
-          height: MediaQuery.of(context).size.height / 12,
-          width: MediaQuery.of(context).size.width / 1.1,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height / 12,
-                width: MediaQuery.of(context).size.width / 1.5,
-                child: TextField(
-                  controller: _message,
-                  decoration: InputDecoration(
-                      hintText: "send Message",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8))),
+            Container(
+              height: MediaQuery.of(context).size.height / 10,
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.center,
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Container(
+                  height: MediaQuery.of(context).size.height / 12,
+                  width: MediaQuery.of(context).size.width / 1.1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height / 12,
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        child: TextField(
+                          controller: _message,
+                          decoration: InputDecoration(
+                              hintText: "send Message",
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8))),
+                        ),
+                      ),
+                      IconButton(
+                          onPressed: onSendMessage, icon: Icon(Icons.send))
+                    ],
+                  ),
                 ),
               ),
-              IconButton(onPressed: onSendMessage, icon: Icon(Icons.send))
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -18,7 +18,6 @@ class _HistoryState extends State<History> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     db = FirebaseFirestore.instance;
   }
@@ -117,12 +116,22 @@ class _HistoryState extends State<History> {
   }
 
   Future loadData() async {
+    tempList1.clear();
     var userEmail = FirebaseAuth.instance.currentUser!.email;
-    await db!.collection("Choices").get().then((event) {
+    await db!.collection("Choices").get().then((event) async {
       for (var doc in event.docs) {
         if (doc.data()["email"] == userEmail) {
           if (doc.data()["status"] == false) {
-            addData(doc.data()["documentId"]);
+            await db!
+                .collection("Schedule")
+                .doc(doc.data()["documentId"])
+                .get()
+                .then((value) {
+              tempList1.add(value.data());
+
+              print(tempList1.length);
+              // print(value.data());
+            });
           }
         }
       }
@@ -132,6 +141,8 @@ class _HistoryState extends State<History> {
       },
     );
   }
+
+  Future addData(data) async {}
 
   void viewDetails(int index) {
     showDialog(
@@ -309,13 +320,5 @@ class _HistoryState extends State<History> {
         );
       },
     );
-  }
-
-  Future addData(data) async {
-    await db!.collection("Schedule").doc(data).get().then((value) {
-      tempList1.add(value.data());
-      print(tempList1.length);
-      print(value.data());
-    });
   }
 }
