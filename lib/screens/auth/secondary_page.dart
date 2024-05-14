@@ -51,8 +51,8 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
               colors: [
-                Colors.blue.shade600,
-                Colors.red.shade700,
+                HexColor('#2E3192'),
+                HexColor('1BFFFF'),
               ],
             ),
           ),
@@ -61,7 +61,7 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
               height: 100,
             ),
             const Icon(
-              Icons.person_3_outlined,
+              Icons.person,
               size: 140,
               color: Colors.white,
             ),
@@ -136,6 +136,7 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
       weight: weight.text.trim(),
       height: height.text.trim(),
       type: false,
+      mStatus: false,
     );
     await db!.collection("users").add(userData.toJson()).then(
         (DocumentReference doc) =>
@@ -197,4 +198,16 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
       print(e);
     }
   }
+}
+
+class HexColor extends Color {
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll('#', '');
+    if (hexColor.length == 6) {
+      hexColor = 'FF' + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
+  }
+
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }

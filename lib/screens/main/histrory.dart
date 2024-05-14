@@ -54,7 +54,7 @@ class _HistoryState extends State<History> {
                           height: 20,
                         ),
                         Text(
-                          "You are History",
+                          "History",
                           style: TextStyle(
                               fontSize: 26, fontWeight: FontWeight.bold),
                         ),
@@ -141,8 +141,6 @@ class _HistoryState extends State<History> {
       },
     );
   }
-
-  Future addData(data) async {}
 
   void viewDetails(int index) {
     showDialog(
@@ -320,5 +318,13 @@ class _HistoryState extends State<History> {
         );
       },
     );
+  }
+
+  Future addData(data) async {
+    await db!.collection("Schedule").doc(data).get().then((value) {
+      tempList1.add(value.data());
+      print(tempList1.length);
+      print(value.data());
+    });
   }
 }

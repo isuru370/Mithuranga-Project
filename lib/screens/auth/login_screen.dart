@@ -29,8 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
               colors: [
-                Colors.blue.shade600,
-                Colors.red.shade700,
+                HexColor('#2E3192'),
+                HexColor('1BFFFF'),
               ],
             ),
           ),
@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 50,
                 ),
                 const Icon(
-                  Icons.lock_open,
+                  Icons.person,
                   size: 100,
                   color: Colors.white,
                 ),
@@ -221,4 +221,16 @@ class _LoginScreenState extends State<LoginScreen> {
       print('Wrong password provided for that user.');
     }
   }
+}
+
+class HexColor extends Color {
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll('#', '');
+    if (hexColor.length == 6) {
+      hexColor = 'FF' + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
+  }
+
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }

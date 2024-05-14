@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mituranga_project/models/add.dart';
+import 'package:mituranga_project/screens/main/home_screen.dart';
 
 class VisibleScreen extends StatefulWidget {
   const VisibleScreen({super.key});
@@ -33,11 +34,25 @@ class _VisibleScreenState extends State<VisibleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("You are Choices Plan"),
-        automaticallyImplyLeading: true,
+        title: Text("Choose your training plan"),
+        automaticallyImplyLeading: false,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(),
+              ));
+        },
+        child: Icon(Icons.arrow_back),
       ),
       body: Column(
         children: [
+          // const Text(
+          //   "Whether you're a beginner dipping your toes into the world of swimming, an intermediate swimmer looking to refine your techniques and endurance, or an experienced swimmer ready to tackle advanced strokes and competitive strategie",
+          //   style: TextStyle(color: Colors.black),
+          // ),
           Expanded(
             flex: 2,
             child: Padding(
@@ -386,7 +401,7 @@ class _VisibleScreenState extends State<VisibleScreen> {
                           .doc(planDocId)
                           .update({"status": false})
                           .then((_) => Fluttertoast.showToast(
-                              msg: "Update Success",
+                              msg: "Training plan deactivated successfully.",
                               toastLength: Toast.LENGTH_LONG))
                           .catchError((error) => Fluttertoast.showToast(
                               msg: "$error", toastLength: Toast.LENGTH_LONG));

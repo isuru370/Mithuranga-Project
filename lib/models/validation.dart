@@ -47,8 +47,7 @@ class ValidationForm {
   }
 
   static bool passwordValidation(String value, String text) {
-    String pattern =
-        r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$";
+    String pattern = r"^[A-Za-z0-9]{5,}$";
     RegExp regExp = RegExp(pattern);
     if (regExp.hasMatch(value)) {
       return true;
